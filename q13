@@ -1,0 +1,66 @@
+	public LinkedList<Character> adder(LinkedList<Character> list1,
+			LinkedList<Character> list2)
+	{
+		// using linked list to ignore space issue (e.g. char array)
+		LinkedList<Character> list3 = new LinkedList<Character>();
+		// reverse string, and make it as linkedlist
+		list1 = toReverselist(list1);
+		list2 = toReverselist(list2);
+		int i = 0, sum = 0, carry = 0, num1, num2;
+		while ( i < list1.size() && i < list2.size() )
+		{
+			num1 = list1.get(i) - '0';
+			num2 = list2.get(i) - '0';
+			sum = ( num1 + num2 + carry ) % 10;
+			carry = ( num1 + num2 + carry ) / 10;
+			list3.add(( char ) ( sum + '0' ));
+			i++;
+		}
+		// same length
+		if ( i == list1.size() && i == list2.size() )
+		{
+			if ( carry == 1 ) list3.add('1');
+		}
+		// not same length, append rest
+		else if ( i < list1.size() ) // list 1 longer
+		{
+			while ( i < list1.size() )
+			{
+				list3.add(( char ) ( ( carry + ( list1.get(i) - '0' ) ) % 10 + '0' ));
+				carry = ( carry + ( list1.get(i) - '0' ) ) / 10;
+				i++;
+			}
+			if ( carry == 1 ) list3.add('1');
+		}
+		else if ( i < list2.size() ) // list 2 longer
+		{
+			while ( i < list2.size() )
+			{
+				list3.add(( char ) ( ( carry + ( list2.get(i) - '0' ) ) % 10 + '0' ));
+				carry = ( carry + ( list2.get(i) - '0' ) ) / 10;
+				i++;
+			}
+			if ( carry == 1 ) list3.add('1');
+		}
+		return toReverselist(list3);
+	}
+
+	public LinkedList<Character> str2List(String str)
+	{
+		LinkedList<Character> ret = new LinkedList<Character>();
+		for ( int i = 0; i < str.length(); i++ )
+		{
+			ret.add(str.charAt(i));
+		}
+		return ret;
+	}
+
+	public LinkedList<Character> toReverselist(LinkedList<Character> str)
+	{
+		LinkedList<Character> ret = new LinkedList<Character>();
+		for ( int i = str.size() - 1; i >= 0; i-- )
+		{
+			ret.add(str.get(i));
+		}
+		return ret;
+	}
