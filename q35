@@ -1,0 +1,50 @@
+public boolean isprime(int num)
+	{
+		if ( num < 4 ) return true;
+		for ( int i = 2; i <= Math.sqrt(num); i++ )
+			if ( num % i == 0 ) return false;
+		return true;
+	}
+
+	public int rotate(int num)
+	{
+		int a = 0, b = 0, k = 0;
+		b = num % 10;
+		a = num / 10;
+		while ( num != 0 )
+		{
+			num = num / 10;
+			k++;
+		}
+		return ( int ) ( b * Math.pow(10, k - 1) + a );
+	}
+	public static void main(String[] args)
+	{
+		// TODO Auto-generated method stub
+		Solution s = new Solution();
+		int tmp, k = 0;
+		boolean flag = false;
+		for ( int i = 2; i < 1000000; i++ )
+		{
+			flag = false;
+			if ( s.isprime(i) )
+			{
+				tmp = s.rotate(i);
+				while ( tmp != i )
+				{
+					if ( !s.isprime(tmp) )
+					{
+						flag = true;
+						break;
+					}
+					tmp = s.rotate(tmp);
+				}
+				if ( flag == false )
+				{
+					k++;
+					System.out.println(i);
+				}
+			}
+		}
+		System.out.println(k);
+	}
