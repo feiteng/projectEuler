@@ -1,0 +1,18 @@
+def pandigital(a,b,c):
+    an = [x for x in str(a)+str(b)+str(c)]
+    an.sort()
+    n = "123456789"
+    if an.__len__() != 9:
+        return False
+    for i in range(0,len((n))):
+        if n[i] != an[i]:
+            return False
+    return True
+
+
+
+for m1 in range(1,10000):
+    for m2 in range(m1,10000):
+        m3 = m1 * m2
+        if pandigital(m1, m2, m3):
+            print ("m1 = " + repr(m1) + "\tm2 = " + repr(m2) + "\tm3 = " + repr(m3))
