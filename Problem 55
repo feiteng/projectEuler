@@ -1,0 +1,21 @@
+def palindrome(n):
+    if str(n)[::-1] == str(n):
+         return True
+    return False
+
+def Lychrel(n):
+    count = 0
+    while( count < 51):
+        ninv = int(str(n)[::-1])
+        sum = n+ninv
+        if palindrome(sum):
+            return True
+        n = sum
+        count += 1
+    return False
+
+t = [x for x in range(1,10001) if not Lychrel(x)]
+print(t)
+print(len(t))
+
+
