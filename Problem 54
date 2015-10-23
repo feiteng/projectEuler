@@ -1,0 +1,140 @@
+def compare(h1, h2):
+    print(' '.join(h1) + "\t", end="")
+    r1 = getrank(h1)
+    print(" | rank1:\t" + repr(r1) + " \t| ", end="")
+    print(' '.join(h2) + "\t", end="")
+    r2 = getrank(h2)
+    print(" | rank2:\t" + repr(r2))
+    if r1 > r2:
+        return 1
+    return 0
+
+
+def getrank(hand):
+    # ranks are represented by 3 number
+    # num1 is the following order
+    # num2 / 3 represents the actual leading card in each rank
+    # High Card         0
+    # One Pair          1
+    # Two Pairs         2
+    # Three of a Kind   3
+    # Straight          4
+    # Flush             5
+    # Full House        6
+    # Four of a Kind    7
+    # Straight Flush    8
+    # Royal Flush       9
+    cardcount = []
+    ls = list(hand)
+    n = [x[0] for x in ls]  # numbers
+    c = [x[1] for x in ls]  # colors
+    flush = False
+    if len(set(c)) == 1:  # rank is at least a flush
+        flush = True
+    cardface = '23456789TJQKA'
+
+    for i in range(0, len(cardface)):
+        cardcount.append(n.count(cardface[i]))
+    maxCount = max(cardcount)
+    royal = False
+    fullHouse = False
+    straight = False
+    four = False
+    trip = False
+    twoPair = False
+    onePair = False
+    highcard = False
+    maxCard = -1
+    secCard = -1
+    if maxCount == 4:
+        four = True
+        maxCard = cardcount.index(4)
+        secCard = cardcount.index(1)
+    if maxCount == 3:  # either triple or full house
+        maxCard = cardcount.index(3)
+        for x in cardcount:
+            if x == 2:
+                fullHouse = True
+                secCard = cardcount.index(2)
+        if not fullHouse:
+            trip = True
+            cardcount = cardcount[::-1]
+            secCard = 12-cardcount.index(1)
+    if maxCount == 2:  # either two pair or one pair
+        if cardcount.count(2) == 2:
+            twoPair = True
+            secCard = cardcount.index(2)
+            cardcount = cardcount[::-1]
+            maxCard = 12 - cardcount.index(2)
+        if not twoPair:
+            onePair = True
+            maxCard = cardcount.index(2)
+            cardcount = cardcount[::-1]
+            secCard = 12-cardcount.index(1)
+    if maxCount == 1:  # high card or straight
+        consecutive = 0
+        for i in range(1, 12):
+            if cardcount[i] == cardcount[i - 1] and cardcount[i] == 1:
+                consecutive += 1
+        if consecutive == 4:
+            straight = True
+            if cardcount[12] == 1 and cardcount[11] == 1 and cardcount[10] == 1 and cardcount[9] == 1:
+                if cardcount[8] == 1:
+                    royal = True
+                    maxCard  = 12
+            else:
+                cardcount = cardcount[::-1]
+                maxCard  = 12-cardcount.index(1)
+            secCard = maxCard - 1
+        if consecutive != 4 and not royal:
+            highcard = True
+            cardcount = cardcount[::-1]
+            maxCard  = 12-cardcount.index(1)
+            secCard = 12 - maxCard + 1
+            while cardcount[secCard] == 0:
+                secCard += 1
+            secCard = 12 - secCard
+
+
+    if royal and flush:
+        print('royal flush \t'+ cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return 9 * 10000 + maxCard*100 + secCard
+    if straight and flush:
+        print('straight flush \t' + cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return 8 * 10000 + maxCard*100 + secCard
+    if four:
+        print('four kind\t' + cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return 7 * 10000 + maxCard*100 + secCard
+    if fullHouse:
+        print('fullHouse \t' + cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return 6 * 10000 + maxCard*100 + secCard
+    if flush:
+        print('flush    \t' + cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return 5 * 10000 + maxCard*100 + secCard
+    if straight:
+        print('straight \t' + cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return 4 * 10000 + maxCard*100 + secCard
+    if trip:
+        print('three kind \t' + cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return 3 * 10000 + maxCard*100 + secCard
+    if twoPair:
+        print('two pair \t' + cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return 2 * 10000 + maxCard*100 + secCard
+    if onePair:
+        print('one pair \t' + cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return 1 * 10000 + maxCard*100 + secCard
+    if highcard:
+        print('high card \t'+ cardface[maxCard] + '\t' +cardface[secCard]+'\t', end="")
+        return maxCard *100 +secCard
+
+
+f = open('pk.txt')
+count = 0
+for i in range(0, 1000):
+    print(repr(1+i) + '\t',end="")
+    hand = f.readline()
+    hand1 = hand[0:14].split(" ")
+    hand2 = hand[15:29].split(" ")
+    if compare(hand1, hand2) == 1:
+        count += 1
+print(count)
