@@ -1,0 +1,17 @@
+Similar question to coin counting game, except 100 can't be expressed as 100 + 0
+
+However, in the question it's implicitly assumed that number can be expressed as itself (except when considering that number). i.e. when considering 4, can't do 4 = 4 + 0. But 5 = 4 + 1 (meaning 4 can be expressed as 4 + 0)
+
+so as in coin counting, but this time the coins are : [1..99]
+
+Thus
+
+nu = 100
+ways = [0] *(1+nu)
+ways[0] = 1
+#ways[1] = 1
+coins=list(range(1,nu))
+for i in range(0,len(coins)):
+    for j in range(coins[i], nu+1):
+        ways[j] += ways[j-coins[i]]
+print(ways[100])
